@@ -10,7 +10,7 @@ import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
 
-    private static final Connection connection = Util.getConnection();
+    private final Connection connection = new Util().getConnection();
 
     public UserDaoJDBCImpl() {
 
@@ -22,6 +22,7 @@ public class UserDaoJDBCImpl implements UserDao {
                     "name VARCHAR(45), " +
                     "lastName VARCHAR(45), " +
                     "age INT)");
+            connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -29,6 +30,7 @@ public class UserDaoJDBCImpl implements UserDao {
     public void dropUsersTable() {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate("DROP TABLE IF EXISTS users");
+            connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -39,6 +41,7 @@ public class UserDaoJDBCImpl implements UserDao {
             pres.setString(2, lastName);
             pres.setInt(3, age);
             pres.executeUpdate();
+            connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -48,6 +51,7 @@ public class UserDaoJDBCImpl implements UserDao {
         try (PreparedStatement pres = connection.prepareStatement("DELETE FROM users WHERE id = ?")) {
             pres.setLong(1, id);
             pres.executeUpdate();
+            connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -61,6 +65,7 @@ public class UserDaoJDBCImpl implements UserDao {
                         resultSet.getByte("age"));
                 user.setId(resultSet.getLong("id"));
                 users.add(user);
+                connection.commit();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -71,6 +76,7 @@ public class UserDaoJDBCImpl implements UserDao {
     public void cleanUsersTable() {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate("TRUNCATE users");
+            connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }

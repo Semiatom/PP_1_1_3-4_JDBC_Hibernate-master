@@ -7,11 +7,11 @@ import java.sql.SQLException;
 public class Util {
     private static Connection connection;
 
-    public static Connection getConnection() {
+    public Connection getConnection() {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection("jdbc:mysql://localhost/new_schema", "root", "root");
-        } catch (SQLException | ClassNotFoundException e) {
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return connection;
