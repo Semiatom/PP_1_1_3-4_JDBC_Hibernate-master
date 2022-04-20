@@ -24,7 +24,7 @@ public class UserDaoHibernateImpl implements UserDao {
             session.beginTransaction();
             Query query = session.createSQLQuery(
                             "CREATE TABLE IF NOT EXISTS users " +
-                                    "(id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, " +
+                                    "(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, " +
                                     "name VARCHAR(50) NOT NULL, lastName VARCHAR(50) NOT NULL, " +
                                     "age TINYINT NOT NULL)")
                     .addEntity(User.class);
@@ -48,8 +48,9 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public void saveUser(String name, String lastName, byte age) {
 
+        User user = new User(name, lastName, age);
+
         try (Session session = sessionFactory.getCurrentSession()){
-            User user = new User(name, lastName, age);
 
             session.beginTransaction();
             session.save(user);
@@ -61,15 +62,38 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public void removeUserById(long id) {
 
+        try (Session session = sessionFactory.getCurrentSession()){
+
+            session.beginTransaction();
+            User user = session.get(User.class,id);
+            session.delete(user);
+            session.getTransaction().commit();
+        }
+
     }
 
     @Override
     public List<User> getAllUsers() {
-        return null;
+
+        List <User> users;
+
+        try (Session session = sessionFactory.getCurrentSession()){
+
+            session.beginTransaction();
+            users = session.createQuery("from User").getResultList();
+            session.getTransaction().commit();
+        }
+        return users;
     }
 
     @Override
     public void cleanUsersTable() {
+        try (Session session = sessionFactory.getCurrentSession()){
+
+            session.beginTransaction();
+            session.createQuery("delete User").executeUpdate();
+            session.getTransaction().commit();
+        }
 
     }
 }
