@@ -6,7 +6,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import javax.persistence.Query;
-import java.sql.Connection;
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
@@ -15,7 +14,6 @@ public class UserDaoHibernateImpl implements UserDao {
     public UserDaoHibernateImpl() {
 
     }
-
 
     @Override
     public void createUsersTable() {
@@ -38,9 +36,10 @@ public class UserDaoHibernateImpl implements UserDao {
         try(Session session = sessionFactory.getCurrentSession()) {
 
             session.beginTransaction();
-            Query query = session.createSQLQuery(
-                            "DROP TABLE IF EXISTS users")
-                    .addEntity(User.class);
+            Query query = session.createQuery(
+                            "delete from User");
+                    query.executeUpdate();
+
             session.getTransaction().commit();
         }
     }
@@ -65,8 +64,7 @@ public class UserDaoHibernateImpl implements UserDao {
         try (Session session = sessionFactory.getCurrentSession()){
 
             session.beginTransaction();
-            User user = session.get(User.class,id);
-            session.delete(user);
+            session.createQuery("delete User where id = id").executeUpdate();
             session.getTransaction().commit();
         }
 
