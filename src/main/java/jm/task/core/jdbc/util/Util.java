@@ -17,7 +17,7 @@ public class Util {
     private static Connection connection;
     private static SessionFactory sessionFactory;
 
-    public Connection getConnection() {
+    public static Connection getConnection() {
         try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost/new_schema", "root", "root");
             connection.setAutoCommit(false);
@@ -26,7 +26,7 @@ public class Util {
         }
         return connection;
     }
-    public SessionFactory getSessionFactory(){
+    public static SessionFactory getSessionFactory(){
         if (sessionFactory == null) {
             try {
                 Configuration configuration = new Configuration();

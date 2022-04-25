@@ -5,13 +5,11 @@ import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-
-import javax.persistence.Query;
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
 
-    private final SessionFactory sessionFactory = new Util().getSessionFactory();
+    private final SessionFactory sessionFactory = Util.getSessionFactory();
 
     public UserDaoHibernateImpl() {
 
@@ -47,12 +45,10 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public void saveUser(String name, String lastName, byte age) {
 
-        User user = new User(name, lastName, age);
-
         try (Session session = sessionFactory.openSession()) {
 
             Transaction transaction = session.beginTransaction();
-            session.save(user);
+            session.save(new User(name, lastName, age));
             transaction.commit();
         }
 
